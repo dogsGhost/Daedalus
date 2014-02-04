@@ -1,0 +1,6 @@
+RewriteEngine on
+#ENABLE REWRITE BASE ON SERVER
+#RewriteBase /
+
+RewriteRule    ^$    public/    [L]
+RewriteRule    (.*) public/$1    [L]
