@@ -2,7 +2,7 @@
 
 class Hook {
 
-	public static function build($url) {
+	public static function route($url) {
 		$uri = self::getURI($url);
 		//Resolve controller
 		$controller = $uri['controller']."Controller";
@@ -22,7 +22,7 @@ class Hook {
 		$uri = [];
 		$components = explode("/", $url);
 		$uri['controller'] = (!empty($components) && $components[0]!=='') ? ucwords($components[0]) : "Home";
-		$uri['model'] = rtrim($uri['controller'], 's');
+		$uri['model'] = rtrim($uri['controller'], 's')."Model";
 		array_shift($components);
 		$uri['action'] = (!empty($components)) ? $components[0] : null;
 		return $uri;

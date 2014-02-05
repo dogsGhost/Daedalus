@@ -1,16 +1,18 @@
 <?php
 
-class Repair {
+class Repair extends MySQLConnection {
 
-	public static function rebuildTables() {
-		global $con;
+	public function __construct() {
+	}
+
+	public function rebuildTables() {
 		//Drop all tables
 		$tables = ['sessions'];
 		foreach($tables as $table) {
-			$con->query("DROP TABLE `$table`");
+			$this->query("DROP TABLE `$table`");
 		}
 		//Sessions Table
-		$con->query("CREATE TABLE `sessions` (
+		$this->query("CREATE TABLE `sessions` (
 			`id` INT NOT NULL AUTO_INCREMENT,
 			`session_id` VARCHAR(32) NOT NULL,
 			`last_active` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
