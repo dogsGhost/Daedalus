@@ -2,10 +2,19 @@
 
 class Session extends MySQLConnection {
 
-	public function __construct() {
-		$this->connect();
-	}
+	//Default configuration
+	private $config = [
+		"allow_proxy" => true,
+		"expiration" => 600, //10 minutes
+		"db_sync" => false
+	];
 
+	public function __construct($config) {
+		$this->connect();
+		foreach($config as $var => $val) {
+			$this->config[$var] = $val;
+		}
+	}
 	public function start() {
 		session_start();
 		if (empty($_SESSION)) {
@@ -17,10 +26,9 @@ class Session extends MySQLConnection {
 	/**************** < PUBLIC METHODS > *******************/
 
 	public function authenticate() {
-		global $session_config;
 		$errors = [];
 		//Enforce IP Consistency
-		if ($session_config['allow_proxy'] === false) {
+		if ($this->config['allow_proxy'] === false) {
 			if ($_SESSION['IP'] != $_SERVER['REMOTE_ADDR']) {
 				$errors[] = "Local IP Address conflicts with what server expected.";
 			}
@@ -28,7 +36,7 @@ class Session extends MySQLConnection {
 		//Logged in users:
 		if ($this->get("logged_in") === true) {
 			//Check session expiration
-			if ((time() - $this->get('last_active')) > $session_config['expiration']) {
+			if ((time() - $this->get('last_active')) > $this->config['expiration']) {
 				$errors[] = "Session has expired. User has been logged out.";
 			}
 		}
@@ -63,19 +71,17 @@ class Session extends MySQLConnection {
 
 	//Updates session variables
 	private function update() {
-		global $session_config;
 		$this->set('views', ($this->get('views')===null) ? 1 : $this->get('views') + 1);
 		$this->set('last_active', time());
-		if (time() - $this->get("last_sync") > $session_config['db_sync']) {
+		if (time() - $this->get("last_sync") > $this->config['db_sync']) {
 			$this->sync();
 		}
 	}
 
 	//Push session data to database
 	private function sync() {
-		global $session_config;
 		//Return if session syncing is disabled
-		if ($session_config['db_sync'] === null) {
+		if ($this->config['db_sync'] === false) {
 			return;
 		}
 		$session_id = session_id();
@@ -108,7 +114,6 @@ class Session extends MySQLConnection {
 
 	/**************** < PUBLIC GET/SET METHODS > *******************/
 
-	//This is a seperate method in case logging is enabled on session variable changes.
 	public function set($property, $value) {
 		$_SESSION["$property"] = $value;
 	}

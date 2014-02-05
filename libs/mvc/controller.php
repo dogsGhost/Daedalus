@@ -24,8 +24,8 @@ class Controller {
 		}
 		//Set default title
 		global $config;
-		$this->_template->set("page", $this->_controller);
-		$this->_template->set("title", ucwords($this->_controller)." | $config[app_name]");
+		$this->_template->set("page", strtolower($this->_controller));
+		$this->_template->set("title", ucwords($this->_controller)." | $config[title]");
 	}
 
 	public function index() {

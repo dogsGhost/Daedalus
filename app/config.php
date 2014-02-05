@@ -8,13 +8,13 @@ $config['environment'] = "local";
 $config['mode'] = "development";
 
 /***** < DATABASE CONFIGURATION > *****/
-$db_config = [];
+$db_config = null;
 
 if ($config['environment']=="local") {
 	$db_config['host'] = "127.0.0.1";
 	$db_config['name'] = "robinson";
 	$db_config['user'] = "root";
-	$db_config['pass'] = "";
+	$db_config['pass'] = "password";
 } elseif ($config['environment']=="server") {
 	/***************************
 	$db_config['host'] = null;
@@ -22,14 +22,13 @@ if ($config['environment']=="local") {
 	$db_config['user'] = null;
 	$db_config['pass'] = null;
 	****************************/
-} else {
-	$db_config = null;
 }
 
 /***** < APPLICATION CONFIGURATION > *****/
-$config['app_name'] = "daedalus";
+$config['title'] = "Daedalus MVC";
+$config['base_dir'] = "daedalus"; //null if root
 $config['protocol'] = "http://";
-$config['host'] = ($config["environment"]=="local") ? "localhost:8080" : "yourdomain.com";
+$config['host'] = ($config["environment"]=="local") ? "localhost" : "yourdomain.com";
 $config['debug'] = ($config['mode']=="development") ? true : false;
 
 /***** < SESSION CONFIGURATION > *****/
@@ -40,16 +39,16 @@ $session_config['db_sync'] = 60 * 1; //1 minute
 /***** < CORE SYSTEM PATHS > *****/
 $paths = [];
 $paths['root'] = $_SERVER["DOCUMENT_ROOT"];
-$paths['root'] .= ($config['app_name'] !== null) ? "/".$config["app_name"] : '';
+$paths['root'] .= ($config['base_dir'] !== null) ? "/".$config["base_dir"] : '';
 $paths['app'] = $paths['root']."/app";
 $paths['libs'] = $paths['root']."/libs";
 $paths['public'] = $paths['root']."/public";
 $paths['views'] = $paths['app']."/views";
 $paths['templates'] = $paths['views']."/templates";
 
-//Public URL Constants
+/***** < PUBLIC URL CONSTANTS > *****/
 $root = $config["protocol"].$config["host"];
-$root .= ($config['app_name'] !== null) ? "/".$config["app_name"] : '';
+$root .= ($config['base_dir'] !== null) ? "/".$config["base_dir"] : '';
 define("URL_HOME", $root);
 define("URL_PUBLIC", URL_HOME."/public");
 define("URL_STYLES", URL_PUBLIC."/styles");
@@ -89,7 +88,7 @@ if (isset($_GET['rebuild'])) {
 }
 
 /***** < OK! START SESSION > *****/
-$session = new Session();
+$session = new Session($session_config);
 $session->start();
 
 if (isset($_GET['destroy'])) {
