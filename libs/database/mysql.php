@@ -2,7 +2,7 @@
 
 class MySQLConnection {
 
-	private $con = null;
+	private $con;
 
 	/************* < PUBLIC METHODS > ***************/
 
@@ -34,9 +34,13 @@ class MySQLConnection {
 	}
 
 	public function connect() {
-		global $config;
-		if ($this->con === null) {
-			$this->con = new mysqli($config['db']['host'], $config['db']['user'], $config['db']['pass'], $config['db']['name']);
+		if (!isset($this->con)) {
+			$this->con = new mysqli(
+				Daedalus::$config['db']['host'], 
+				Daedalus::$config['db']['user'], 
+				Daedalus::$config['db']['pass'], 
+				Daedalus::$config['db']['name']
+			);
 		}
 	}
 

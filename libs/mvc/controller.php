@@ -2,10 +2,7 @@
 
 class Controller {
 
-	protected $_model = null;
-	protected $_controller;
-	protected $_action;
-	protected $_template;
+	protected $_model;
 	protected $_validation = [];
 
 	public function __construct($uri) {
@@ -13,11 +10,7 @@ class Controller {
 		if (class_exists($uri['model'])) {
 			$this->_model = new $uri['model']();
 		}
-		//Resolve controller and action
-		$this->_controller = $uri['controller'];
-		$this->_action = (method_exists($this, $uri['action'])) ? $uri['action'] : "index";
-		//Build template
-		$this->_template = new Template($this->_controller, $this->_action);
+		$this->_template = new Template(Daedalus::$controller, Daedalus::$action);
 		//Auto-authenticate if required
 		if (method_exists($this, "auth")) {
 			$this->auth();

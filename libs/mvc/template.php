@@ -2,15 +2,14 @@
 
 class Template {
 
-	private $view;
 	private $template = "main";
 	private $vars = [
-		"title" => "default template title",
-		"validation" => []
+		"view" => null,
+		"title" => "default template title"
 	];
 
 	public function __construct($controller, $action) {
-		$this->view = strtolower("$controller/$action");
+		$this->set("view", strtolower("$controller/$action"));
 		$this->set("page", $controller);
 	}
 
@@ -29,7 +28,6 @@ class Template {
 	public function render() {
 		extract($this->vars);
 		include TEMPLATES_DIR."/$this->template.php";
-		var_dump($_SESSION);
 	}
 
 }

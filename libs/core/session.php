@@ -7,15 +7,14 @@ class Session extends MySQLConnection {
 
 	public static function getInstance() {
 		if (!isset(self::$instance)) {
-			self::$instance = new Session;	
+			self::$instance = new Session();	
 		}
 		return self::$instance;
 	}
 
 	private function __construct() {
-		global $config;
 		$this->connect();
-		foreach($config['session'] as $var => $val) {
+		foreach(Daedalus::$config['session'] as $var => $val) {
 			$this->config[$var] = $val;
 		}
 		$this->start();
@@ -25,15 +24,9 @@ class Session extends MySQLConnection {
 
 	public function authenticate() {
 		$errors = [];
-		//Enforce IP Consistency
-		if ($this->config['allow_proxy'] === false) {
-			if ($_SESSION['IP'] != $_SERVER['REMOTE_ADDR']) {
-				$errors[] = "Local IP Address conflicts with what server expected.";
-			}
-		}
-		//Logged in users:
+		/***** < Logged in users > *****/
 		if ($this->get("logged_in") === true) {
-			//Check session expiration
+			//Session expiration
 			if ((time() - $this->get('last_active')) > $this->config['expiration']) {
 				$errors[] = "Session has expired. User has been logged out.";
 			}
@@ -114,7 +107,7 @@ class Session extends MySQLConnection {
 	}
 
 	public function get($property) {
-		return (!empty($_SESSION) && isset($_SESSION[$property])) ? $_SESSION["$property"] : null;
+		return (!empty($_SESSION) && isset($_SESSION[$property])) ? $_SESSION[$property] : null;
 	}
 
 }

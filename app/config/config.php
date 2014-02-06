@@ -79,8 +79,4 @@ Auto_Loader::load([
 	]
 ]);
 
-//DB DEBUGGING TOOL
-if (isset($_GET['rebuild'])) {
-	$repair = new Repair();
-	$repair->rebuildTables();
-}
+return $config;

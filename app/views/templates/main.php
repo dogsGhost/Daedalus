@@ -22,7 +22,7 @@
 		</header>
 		<div id="content">
 			<?php
-				include VIEWS_DIR."/$this->view.php";
+				include VIEWS_DIR."/$view.php";
 				echo "\n"; //Formatting
 			?>
 		</div>
