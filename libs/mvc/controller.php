@@ -22,10 +22,6 @@ class Controller {
 		if (method_exists($this, "auth")) {
 			$this->auth();
 		}
-		//Set default title
-		global $config;
-		$this->_template->set("page", strtolower($this->_controller));
-		$this->_template->set("title", ucwords($this->_controller)." | $config[title]");
 	}
 
 	public function index() {

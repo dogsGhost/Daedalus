@@ -35,7 +35,7 @@ class MySQLConnection {
 
 	public function connect() {
 		global $config;
-		if ($this->con === null && !empty($config['db'])) {
+		if ($this->con === null) {
 			$this->con = new mysqli($config['db']['host'], $config['db']['user'], $config['db']['pass'], $config['db']['name']);
 		}
 	}

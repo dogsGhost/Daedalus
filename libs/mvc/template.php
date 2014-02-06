@@ -2,8 +2,6 @@
 
 class Template {
 
-	private $controller; 
-	private $dir;
 	private $view;
 	private $template = "main";
 	private $vars = [
@@ -12,11 +10,8 @@ class Template {
 	];
 
 	public function __construct($controller, $action) {
-		$this->controller = strtolower($controller);
-		$this->view = strtolower($action);
-		$this->vars['active'] = $controller;
-		global $paths;
-		$this->dir = $paths['templates'];
+		$this->view = strtolower("$controller/$action");
+		$this->set("page", $controller);
 	}
 
 	public function set($name, $val) {
@@ -28,13 +23,13 @@ class Template {
 	}
 
 	public function setTemplate($template) {
-		$this->template = (file_exists($this->dir."/$template.php")) ? $template : $this->template;
+		$this->template = (TEMPLATES_DIR."/$template.php") ? $template : $this->template;
 	}
 
 	public function render() {
-		global $paths;
 		extract($this->vars);
-		include "$this->dir/$this->template.php";
+		include TEMPLATES_DIR."/$this->template.php";
+		var_dump($_SESSION);
 	}
 
 }

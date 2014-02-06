@@ -2,25 +2,23 @@
 
 class Session extends MySQLConnection {
 
-	//Default configuration
-	private $config = [
-		"allow_proxy" => true,
-		"expiration" => 600, //10 minutes
-		"db_sync" => false
-	];
+	private $config;
+	private static $instance;
 
-	public function __construct($config) {
+	public static function getInstance() {
+		if (!isset(self::$instance)) {
+			self::$instance = new Session;	
+		}
+		return self::$instance;
+	}
+
+	private function __construct() {
+		global $config;
 		$this->connect();
-		foreach($config as $var => $val) {
+		foreach($config['session'] as $var => $val) {
 			$this->config[$var] = $val;
 		}
-	}
-	public function start() {
-		session_start();
-		if (empty($_SESSION)) {
-			$this->init();
-		}
-		$this->update();
+		$this->start();
 	}
 
 	/**************** < PUBLIC METHODS > *******************/
@@ -40,12 +38,6 @@ class Session extends MySQLConnection {
 				$errors[] = "Session has expired. User has been logged out.";
 			}
 		}
-		//Write to log
-		if (!empty($errors)) {
-			foreach($errors as $error) {
-				Log::write($error);
-			}
-		}
 		return (empty($errors)) ? true : false;
 	}
 
@@ -54,19 +46,22 @@ class Session extends MySQLConnection {
 		session_destroy();
 		$this->start();
 	}
-
-	public function forceSync() {
-		$this->sync();
-	}
 	
 	/**************** < PRIVATE METHODS > *******************/
+
+	private function start() {
+		session_start();
+		if (empty($_SESSION)) {
+			$this->init();
+		}
+		$this->update();
+	}
 
 	//Initializes properties in a new session
 	private function init() {
 		session_regenerate_id(true);
 		$this->set('IP', $_SERVER['REMOTE_ADDR']);
 		$this->set('user', null);
-		$this->sync();
 	}
 
 	//Updates session variables
@@ -115,11 +110,11 @@ class Session extends MySQLConnection {
 	/**************** < PUBLIC GET/SET METHODS > *******************/
 
 	public function set($property, $value) {
-		$_SESSION["$property"] = $value;
+		$_SESSION[$property] = $value;
 	}
 
 	public function get($property) {
-		return (!empty($_SESSION) && isset($_SESSION["$property"])) ? $_SESSION["$property"] : null;
+		return (!empty($_SESSION) && isset($_SESSION[$property])) ? $_SESSION["$property"] : null;
 	}
 
 }
