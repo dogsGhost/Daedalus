@@ -2,17 +2,16 @@
 
 class Controller {
 
-	protected $_model;
-	protected $_validation = [];
+	protected $_model = null;
 
-	public function __construct($uri) {
+	public function __construct($model = null) {
 		//Resolve and autoload model
-		if (class_exists($uri['model'])) {
-			$this->_model = new $uri['model']();
+		if ($model !== null && class_exists($model)) {
+			$this->_model = new $model();
 		}
 		$this->_template = new Template(Daedalus::$controller, Daedalus::$action);
 		//Auto-authenticate if required
-		if (method_exists($this, "auth")) {
+		if (is_callable($this, "auth")) {
 			$this->auth();
 		}
 	}
@@ -23,6 +22,5 @@ class Controller {
 	public function __destruct() {
 		$this->_template->render();
 	}
-
 
 }

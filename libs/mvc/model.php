@@ -1,19 +1,20 @@
 <?php
 
-class Model extends MySQLConnection {
+class Model {
 
-	public $attributes = [];
+	use MySQLConnection;
+	public $properties = [];
 
 	public function __construct() {
 		$this->connect();
 	}
 
-	public function set($attribute, $val) {
-		$this->attributes[$attribute] = $val;
+	public function set($key, $val) {
+		$this->properties[$key] = $val;
 	}
 
-	public function get($attribute) {
-		return (isset($this->attributes[$attribute])) ? $this->attributes[$attribute] : null;
+	public function get($key) {
+		return (isset($this->properties[$key])) ? $this->properties[$key] : null;
 	}
 	
 }

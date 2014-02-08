@@ -1,6 +1,6 @@
 <?php
 
-class MySQLConnection {
+trait MySQLConnection {
 
 	private $con;
 

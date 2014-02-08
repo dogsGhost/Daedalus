@@ -4,13 +4,13 @@ class Template {
 
 	private $template = "main";
 	private $vars = [
-		"view" => null,
-		"title" => "default template title"
+		"view" => "index",
+		"title" => "Daedalus MVC Framework"
 	];
 
 	public function __construct($controller, $action) {
 		$this->set("view", strtolower("$controller/$action"));
-		$this->set("page", $controller);
+		$this->set("page", strtolower($controller));
 	}
 
 	public function set($name, $val) {
@@ -22,7 +22,7 @@ class Template {
 	}
 
 	public function setTemplate($template) {
-		$this->template = (TEMPLATES_DIR."/$template.php") ? $template : $this->template;
+		$this->template = file_exists(TEMPLATES_DIR."/$template.php") ? $template : $this->template;
 	}
 
 	public function render() {

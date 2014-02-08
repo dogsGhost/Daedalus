@@ -1,7 +1,8 @@
 <?php
 
-class Session extends MySQLConnection {
+class Session {
 
+	use MySQLConnection;
 	private $config;
 	private static $instance;
 

@@ -15,17 +15,17 @@ class Daedalus {
 
 	private static function hook() {
 		$uri = self::getURI((!empty($_GET['url'])) ? $_GET['url'] : "Home");
+		//Resolve controller and action
 		self::$controller = $uri['controller'];
 		$controller = self::$controller."Controller";
-		//Resolve controller and action
-		$action = "index";
+		Daedalus::$action = "index";
 		if (class_exists($controller)) {
-			$action = method_exists($controller, $uri['action']) ? $uri['action'] : $action;
-			Daedalus::$action = $action;
-			$controller = new $controller($uri);
+			Daedalus::$action = method_exists($controller, $uri['action']) ? $uri['action'] : Daedalus::$action;
+			$controller = new $controller($uri['model']);
 		} else {
 			$controller = new ErrorController();
 		}
+		$action = Daedalus::$action;
 		$controller->$action();
 	}
 
