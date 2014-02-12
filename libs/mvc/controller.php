@@ -2,22 +2,24 @@
 
 class Controller {
 
-	protected $_model = null;
+	protected $_controller;
+	protected $_action;
+	protected $_model;
+	protected $_template;
 
-	public function __construct($model = null) {
+	public function __construct($controller, $action, $model = null) {
+		$this->_controller = $controller;
+		//Resolve action and view
+		$this->_action = (is_callable($this, $action)) ? $action : "index";
+		$this->_view = $this->_controller."/$this->_action";
 		//Resolve and autoload model
-		if ($model !== null && class_exists($model)) {
+		if (class_exists($model)) {
 			$this->_model = new $model();
 		}
-		$this->_template = new Template(Daedalus::$controller, Daedalus::$action);
-		//Auto-authenticate if required
-		if (is_callable($this, "auth")) {
-			$this->auth();
-		}
+		$this->_template = new Template($this->_controller, $this->_action);
 	}
 
-	public function index() {
-	}
+	public function index() {}
 
 	public function __destruct() {
 		$this->_template->render();

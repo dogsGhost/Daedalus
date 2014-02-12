@@ -5,7 +5,7 @@
 	<meta charset="UTF-8">
 	<meta name="description" content="Framework from: http://github.com/inevitableIcarus/">
 	<meta name="author" content="David Zukowski">
-	<meta name="viewport" content="width=device-width" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<link href="<?php echo URL_STYLES;?>/main.less" rel="stylesheet" type="text/less">
 	<?php 
 	HTML_Helper::scriptTag("jquery.js");
